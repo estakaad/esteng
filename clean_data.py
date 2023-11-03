@@ -49,32 +49,34 @@ def is_word_in_ys_file(word, ys_set):
         return False
 
 
-#base_data = 'failid/andmestik/keelevaraga/ekilex_import_data_inter.json'
-base_data = 'failid/andmestik/keelevaraga/ekilex_import_data_itermax.json'
+base_data = 'failid/andmestik/keelevaraga/ekilex_import_data_inter.json'
+#base_data = 'failid/andmestik/keelevaraga/ekilex_import_data_itermax.json'
 ys = 'failid/andmestik/YS/_SELECT_DISTINCT_word_value_FROM_lexeme_JOIN_word_ON_lexeme_word_202310051024.csv'
 api_url = 'https://ekitest.tripledev.ee/ekilex/api/'
-#type = 'inter'
-type = 'iter'
+type = 'inter'
+#type = 'iter'
 
 current_datetime = datetime.now()
 
 # Format the datetime object as a string
 formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
-output_directory = f'output/{formatted_datetime}'
+output_directory = f'output/{formatted_datetime}-{type}'
 os.makedirs(output_directory, exist_ok=True)
 
 # Initialize logging and other variables
 start_time = time.time()
 logging.basicConfig(filename=f'{output_directory}/logfile_{formatted_datetime}.log', level=logging.INFO,
-                    format='%(asctime)s:%(levelname)s:%(message)s')
+                    format='%(asctime)s:%(levelname)s:%(message)s ')
+
+logging.info("Script started")
 
 ys_set = load_ys_file_to_set(ys)
 
-
+logging.info("Started loading the file.")
 # Load the original JSON data
 with open(base_data, 'r', encoding='utf-8') as f:
     data = json.load(f)
-
+logging.info("Finished loading the file.")
 removed_items = []
 filtered_data = []
 

@@ -3,7 +3,6 @@ import re
 import json
 from collections import defaultdict
 
-
 html_file_path = 'failid/sõnastikud/keelevara/et-en_silvet/HTML.html'
 
 with open(html_file_path, 'r', encoding='utf-8') as f:
