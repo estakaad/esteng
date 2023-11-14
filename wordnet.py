@@ -40,23 +40,28 @@ def process_data(data):
             for pos, definitions in wordnet_definitions_by_pos.items():
                 mapped_pos = pos_mapping.get(pos, pos)
 
-                # Check if this POS is already in existing POS codes
-                if mapped_pos not in existing_pos_codes:
-                    # Create a new entry for this POS
+                # Check if this word with the mapped POS already exists in new_syn_candidate_words
+                existing_entry = next((item for item in new_syn_candidate_words if
+                                       item['value'] == word_value and mapped_pos in item['posCodes']), None)
+
+                if existing_entry:
+                    # If exists, extend the definitions of the existing entry
+                    existing_entry['definitions'].extend(
+                        [{"value": defn, "sourceLinks": [{"sourceId": 84967, "value": "NLTK"}]} for defn in
+                         definitions])
+                else:
+                    # If not, create a new entry for this POS
                     new_word_entry = {
                         "value": word_value,
                         "lang": "eng",
                         "weight": syn_word.get('weight', 1.0),
                         "posCodes": [mapped_pos],
-                        "definitions": syn_word.get('definitions', []) + [{"value": defn, "sourceLinks": [{"sourceId": 84967, "value": "NLTK"}]} for defn in definitions],
+                        "definitions": syn_word.get('definitions', []) + [
+                            {"value": defn, "sourceLinks": [{"sourceId": 84967, "value": "NLTK"}]} for defn in
+                            definitions],
                         "usages": syn_word.get('usages', [])
                     }
                     new_syn_candidate_words.append(new_word_entry)
-                else:
-                    # Append definitions to existing entry
-                    for existing_word in new_syn_candidate_words:
-                        if existing_word['value'] == word_value and mapped_pos in existing_word['posCodes']:
-                            existing_word['definitions'].extend([{"value": defn, "sourceLinks": [{"sourceId": 84967, "value": "NLTK"}]} for defn in definitions])
 
             # Add the original word if it doesn't have any WordNet definitions
             if word_value and not wordnet_definitions_by_pos:
